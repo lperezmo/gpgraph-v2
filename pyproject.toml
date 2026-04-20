@@ -1,0 +1,127 @@
+[project]
+name = "gpgraph-v2"
+version = "0.1.0"
+description = "NetworkX-backed, Rust-accelerated graphs over genotype-phenotype maps."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [{ name = "Luis Perez", email = "lperezmo@users.noreply.github.com" }]
+keywords = ["genotype", "phenotype", "epistasis", "fitness-landscape", "networkx", "graph"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Rust",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = [
+    "numpy >=2.0",
+    "networkx >=3.6",
+    "gpmap-v2 >=1.0",
+    "tqdm >=4.67",
+    "typing-extensions >=4.12",
+]
+
+[project.optional-dependencies]
+plot = ["matplotlib >=3.10"]
+streamlit = ["streamlit >=1.56", "matplotlib >=3.10"]
+
+[project.urls]
+Homepage = "https://github.com/lperezmo/gpgraph-v2"
+Repository = "https://github.com/lperezmo/gpgraph-v2"
+Issues = "https://github.com/lperezmo/gpgraph-v2/issues"
+
+[dependency-groups]
+dev = [
+    "pytest >=8",
+    "pytest-benchmark >=4",
+    "pytest-cov >=5",
+    "hypothesis >=6.100",
+    "ruff >=0.6",
+    "mypy >=1.10",
+    "maturin >=1.13",
+    "matplotlib >=3.10",
+]
+
+[build-system]
+requires = ["maturin >=1.13,<2.0"]
+build-backend = "maturin"
+
+[tool.maturin]
+module-name = "gpgraph._rust"
+python-source = "python"
+manifest-path = "crates/gpgraph-core/Cargo.toml"
+features = ["pyo3/extension-module"]
+
+[tool.semantic_release]
+version_toml = [
+    "pyproject.toml:project.version",
+    "Cargo.toml:workspace.package.version",
+]
+version_variables = ["python/gpgraph/_version.py:__version__"]
+tag_format = "v{version}"
+commit_message = "chore(release): v{version}"
+# Release job does not build artifacts. Wheel + sdist builds happen in
+# downstream matrix jobs via PyO3/maturin-action where Rust is available.
+# Putting a build step here would fail: python-semantic-release runs in a
+# Docker image with no Rust toolchain.
+build_command = ""
+# Force first release to go straight to 1.0.0 instead of climbing from
+# 0.0.1. With this set, versions below 1.0.0 are treated as disallowed.
+allow_zero_version = false
+
+[tool.semantic_release.branches.main]
+match = "main"
+prerelease = false
+
+[tool.semantic_release.commit_parser_options]
+allowed_tags = [
+    "feat",
+    "fix",
+    "perf",
+    "refactor",
+    "style",
+    "docs",
+    "test",
+    "build",
+    "ci",
+    "chore",
+    "revert",
+]
+minor_tags = ["feat"]
+patch_tags = ["fix", "perf"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM", "RUF"]
+# N803/N806 flag canonical math / graph-theory symbols (L, N, G) in a scientific library.
+# E741 flags `l` which is occasionally the cleanest name for length-like ints.
+ignore = ["E501", "N803", "N806", "E741"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["B905"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+files = ["python/gpgraph"]
+
+[[tool.mypy.overrides]]
+module = ["networkx.*", "matplotlib.*", "scipy.*", "pandas.*", "tqdm.*", "gpmap.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+filterwarnings = [
+    "error",
+    "ignore::DeprecationWarning:pytest_benchmark.*",
+]

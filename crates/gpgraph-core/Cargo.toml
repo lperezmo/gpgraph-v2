@@ -1,0 +1,23 @@
+[package]
+name = "gpgraph-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Rust hot-path primitives for gpgraph-v2 (pairwise hamming + codon neighbors)."
+
+[lib]
+name = "gpgraph_core"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+pyo3 = { version = "0.28", features = ["abi3-py311", "extension-module"] }
+numpy = "0.28"
+ndarray = "0.17"
+rayon = "1.11"
+rustc-hash = "2"
+
+[features]
+default = []
+extension-module = ["pyo3/extension-module"]

@@ -1,0 +1,8 @@
+# Pins for Streamlit Cloud. Local dev uses uv + pyproject.toml instead.
+gpgraph-v2
+gpmap-v2 >= 1.0
+streamlit >= 1.56
+matplotlib >= 3.10
+numpy >= 2.0
+networkx >= 3.6
+pandas >= 2.0
