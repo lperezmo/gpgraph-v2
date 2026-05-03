@@ -94,7 +94,42 @@ draw_paths(G, source=0, target=7)     # paths flux overlay
 
 ## Benchmarks
 
-Rust kernels vs a pure-Python pairwise reference. Windows 11, Ryzen, release build.
+### vs v1 (harmslab/gpgraph 0.2.0)
+
+Measured on Windows 11 against `gpgraph==0.2.0`. Full biallelic space (`AT` alphabet),
+`timeit` best-of-5. See [`benchmarks/vs_v1.py`](benchmarks/vs_v1.py) for scripts.
+v1 is capped at L=12 because its O(N^2 * L) neighbor search becomes impractical past that.
+
+#### Build graph (neighbor detection)
+
+| L | genotypes | v1 (ms) | v2 (ms) | speedup |
+|---|-----------|---------|---------|---------|
+| 8 | 256 | 14.75 | 11.60 | 1.3x |
+| 10 | 1,024 | 59.93 | 47.05 | 1.3x |
+| 12 | 4,096 | 262.35 | 202.10 | 1.3x |
+| 14 | 16,384 | (impractical) | 919.88 | |
+| 16 | 65,536 | (impractical) | 3,901.40 | |
+
+> Both versions are bottlenecked by NetworkX node/edge insertion at scale.
+> The Rust neighbor detection eliminates the O(N^2) comparison but NetworkX
+> graph mutation is the dominant cost. SSWM (below) shows the larger win.
+
+#### Add SSWM fixation model
+
+| L | genotypes | v1 (ms) | v2 (ms) | speedup |
+|---|-----------|---------|---------|---------|
+| 8 | 256 | 73.09 | 13.57 | 5.4x |
+| 10 | 1,024 | 360.03 | 59.70 | 6.0x |
+| 12 | 4,096 | 1,756.46 | 264.68 | 6.6x |
+| 14 | 16,384 | (impractical) | 1,198.52 | |
+| 16 | 65,536 | (impractical) | 5,281.20 | |
+
+> v1 iterates over edges one at a time in Python. v2 vectorizes fixation probability
+> over all edges at once using NumPy, giving 5-7x speedup.
+
+### Rust kernels vs pure-Python pairwise reference
+
+Windows 11, Ryzen, release build.
 Run via `uv run pytest tests/benchmarks/ --benchmark-only`.
 
 | problem              | bit-flip (Rust) | pairwise (Rust) | pairwise (Python) |
@@ -156,8 +191,8 @@ Imports remain `from gpgraph import GenotypePhenotypeGraph`.
 gpgraph-v2 is not wire-compatible with v1. Key differences:
 
 - Distribution name is `gpgraph-v2` on PyPI; import path is still `gpgraph`.
-- Construction: use `GenotypePhenotypeGraph.from_gpm(gpm, ...)`. The v1 two-step
-  `G = GenotypePhenotypeGraph(); G.add_gpm(gpm)` is removed.
+- Construction: use `GenotypePhenotypeGraph.from_gpm(gpm, ...)`. v1 took gpm directly
+  in the constructor (`GenotypePhenotypeGraph(gpm)`), which internally called `add_gpm`.
 - Reads gpmap-v2 columns: node attribute is `phenotypes`, not `fitnesses`.
 - `__repr__` no longer renders a matplotlib figure as a side effect.
 - Matplotlib is an optional extra (`gpgraph-v2[plot]`); the core install is headless.
