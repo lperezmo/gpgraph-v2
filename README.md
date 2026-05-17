@@ -1,6 +1,7 @@
 # gpgraph-v2
 
 [![CI](https://github.com/lperezmo/gpgraph-v2/actions/workflows/ci.yml/badge.svg)](https://github.com/lperezmo/gpgraph-v2/actions/workflows/ci.yml)
+[![Documentation](https://github.com/lperezmo/gpgraph-v2/actions/workflows/docs.yml/badge.svg)](https://lperezmo.github.io/gpgraph-v2/)
 [![PyPI](https://img.shields.io/pypi/v/gpgraph-v2.svg)](https://pypi.org/project/gpgraph-v2/)
 [![Python](https://img.shields.io/pypi/pyversions/gpgraph-v2.svg)](https://pypi.org/project/gpgraph-v2/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
