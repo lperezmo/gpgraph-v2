@@ -17,11 +17,11 @@ from gpgraph import _rust
 st.title("Benchmarks")
 
 st.markdown(
-    """
+    r"""
 Rust bit-flip vs rayon-parallel pairwise hamming on random biallelic
 packed data. The bit-flip kernel specializes on cutoff 1 and 2 and scales
-as `O(N * C(L, cutoff))`; the pairwise kernel is `O(N^2 * L)`. At moderate
-N the bit-flip path wins decisively.
+as $O\!\bigl(N \binom{L}{\text{cutoff}}\bigr)$; the pairwise kernel is
+$O(N^{2} L)$. At moderate $N$ the bit-flip path wins decisively.
 """
 )
 
