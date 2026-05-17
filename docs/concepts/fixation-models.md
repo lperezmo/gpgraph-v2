@@ -13,12 +13,12 @@ All four built-in models accept either scalar or matching array inputs. The arra
 
 Gillespie (1984). Probability of fixation in the strong-selection weak-mutation limit:
 
-```
-pi_{i -> j} = 1 - exp(-s_ij)
-where s_ij = (f_j - f_i) / f_i
-```
+$$
+\pi_{i \to j} \;=\; 1 - \exp(-s_{ij}), \qquad
+s_{ij} \;=\; \frac{f_j - f_i}{f_i}
+$$
 
-For `f_j <= f_i`, returns 0 (no advantageous fixation).
+For $f_j \le f_i$, returns 0 (no advantageous fixation).
 
 ```python
 from gpgraph.fixation import strong_selection_weak_mutation
@@ -36,9 +36,9 @@ This is the default choice for most analyses. It is parameter-free and has a cle
 
 ## `ratio`
 
-```
-ratio(f_i, f_j) = f_j / f_i
-```
+$$
+\operatorname{ratio}(f_i, f_j) \;=\; \frac{f_j}{f_i}
+$$
 
 Not a probability, just the relative fitness. Useful when you want edge weights that grow without bound rather than saturate.
 
@@ -56,13 +56,13 @@ The string alias is `"ratio"`.
 
 ## `moran`
 
-Sella and Hirsch (2005). Moran-process fixation probability for population size `N`:
+Sella and Hirsch (2005). Moran-process fixation probability for population size $N$:
 
-```
-pi_{i -> j} = (1 - (f_i/f_j)) / (1 - (f_i/f_j)^N)
-```
+$$
+\pi_{i \to j} \;=\; \frac{1 - f_i / f_j}{1 - (f_i / f_j)^{N}}
+$$
 
-with overflow-protected branches preserving the scalar v1 behavior. For `f_i == f_j`, returns `1/N` via a two-point average of slightly perturbed evaluations (matches v1).
+with overflow-protected branches preserving the scalar v1 behavior. For $f_i = f_j$, returns $1/N$ via a two-point average of slightly perturbed evaluations (matches v1).
 
 ```python
 from gpgraph.fixation import moran
@@ -82,11 +82,11 @@ For `N == 1`, returns 1.0 by convention (matches v1).
 
 McCandlish (2011). An exponentiated form of the Moran probability:
 
-```
-pi_{i -> j} = (1 - exp(-2 * (f_j - f_i))) / (1 - exp(-2 * N * (f_j - f_i)))
-```
+$$
+\pi_{i \to j} \;=\; \frac{1 - \exp\!\bigl(-2(f_j - f_i)\bigr)}{1 - \exp\!\bigl(-2 N (f_j - f_i)\bigr)}
+$$
 
-with the same overflow-protected branches and `f_i == f_j` handling as `moran`.
+with the same overflow-protected branches and $f_i = f_j$ handling as `moran`.
 
 ```python
 from gpgraph.fixation import mcclandish
