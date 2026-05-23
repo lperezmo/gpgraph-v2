@@ -5,7 +5,7 @@
 [![PyPI](https://img.shields.io/pypi/v/gpgraph-v2.svg)](https://pypi.org/project/gpgraph-v2/)
 [![Python](https://img.shields.io/pypi/pyversions/gpgraph-v2.svg)](https://pypi.org/project/gpgraph-v2/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://gpgraph-v2.streamlit.app)
+[![Streamlit App](https://img.shields.io/badge/Streamlit-App-FF4B4B?logo=streamlit&logoColor=white)](https://gpgraph-v2.streamlit.app)
 
 NetworkX-backed, Rust-accelerated graphs over genotype-phenotype maps.
 
