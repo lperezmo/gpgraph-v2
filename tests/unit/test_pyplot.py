@@ -12,9 +12,11 @@ from gpgraph import GenotypePhenotypeGraph
 from gpgraph.pyplot import (
     bins,
     construct_ax,
+    contrast_ink,
     despine_ax,
     draw_gpgraph,
     draw_paths,
+    resolve_node_fills,
     truncate_colormap,
 )
 from gpgraph.pyplot.primitives import draw_edge_labels, draw_edges, draw_node_labels, draw_nodes
@@ -67,6 +69,66 @@ def test_draw_paths_smoke(tiny_graph: GenotypePhenotypeGraph) -> None:
     ax = draw_paths(tiny_graph, source=0, target=7)
     assert ax is not None
     plt.close(ax.get_figure())
+
+
+def test_contrast_ink_dark_on_light_fill() -> None:
+    # Yellow / white are light: ink should be the dark option.
+    assert contrast_ink("#ffff00") == "#10141a"
+    assert contrast_ink("white") == "#10141a"
+
+
+def test_contrast_ink_light_on_dark_fill() -> None:
+    # Near-black / deep purple are dark: ink should be the light option.
+    assert contrast_ink("#000000") == "#f6f8fa"
+    assert contrast_ink((0.1, 0.0, 0.2)) == "#f6f8fa"
+
+
+def test_contrast_ink_custom_inks() -> None:
+    assert contrast_ink("black", dark="#111", light="#eee") == "#eee"
+    assert contrast_ink("white", dark="#111", light="#eee") == "#111"
+
+
+def test_resolve_node_fills_broadcasts_single_color() -> None:
+    fills = resolve_node_fills("red", 3)
+    assert len(fills) == 3
+    assert fills[0] == pytest.approx((1.0, 0.0, 0.0, 1.0))
+
+
+def test_resolve_node_fills_maps_scalars_through_cmap() -> None:
+    fills = resolve_node_fills([0.0, 1.0], 2, cmap="viridis")
+    assert len(fills) == 2
+    # The low and high ends of a colormap differ.
+    assert fills[0] != fills[1]
+    assert all(len(c) == 4 for c in fills)
+
+
+def test_resolve_node_fills_passes_through_color_list() -> None:
+    fills = resolve_node_fills(["#000000", "#ffffff"], 2)
+    assert fills[0] == pytest.approx((0.0, 0.0, 0.0, 1.0))
+    assert fills[1] == pytest.approx((1.0, 1.0, 1.0, 1.0))
+
+
+def test_draw_gpgraph_with_labels_auto_ink(tiny_graph: GenotypePhenotypeGraph) -> None:
+    fig, ax = draw_gpgraph(tiny_graph, with_labels=True)
+    texts = [t.get_text() for t in ax.texts]
+    # One label per node, defaulting to the genotype string.
+    assert len(texts) == tiny_graph.number_of_nodes()
+    assert "AAA" in texts and "TTT" in texts
+    plt.close(fig)
+
+
+def test_draw_gpgraph_label_ink_override(tiny_graph: GenotypePhenotypeGraph) -> None:
+    fig, ax = draw_gpgraph(tiny_graph, with_labels=True, label_ink="red")
+    assert ax.texts
+    for t in ax.texts:
+        assert t.get_color() == "red"
+    plt.close(fig)
+
+
+def test_draw_gpgraph_auto_edgecolors(tiny_graph: GenotypePhenotypeGraph) -> None:
+    fig, ax = draw_gpgraph(tiny_graph, node_edgecolors="auto")
+    assert fig is not None and ax is not None
+    plt.close(fig)
 
 
 def test_primitives_round_trip(tiny_graph: GenotypePhenotypeGraph) -> None:

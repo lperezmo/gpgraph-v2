@@ -15,15 +15,24 @@ except ImportError as exc:  # pragma: no cover - environment dependent
 from gpgraph.pyplot.draw import draw_gpgraph
 from gpgraph.pyplot.paths import draw_paths
 from gpgraph.pyplot.primitives import draw_edges, draw_nodes
-from gpgraph.pyplot.utils import bins, construct_ax, despine_ax, truncate_colormap
+from gpgraph.pyplot.utils import (
+    bins,
+    construct_ax,
+    contrast_ink,
+    despine_ax,
+    resolve_node_fills,
+    truncate_colormap,
+)
 
 __all__ = [
     "bins",
     "construct_ax",
+    "contrast_ink",
     "despine_ax",
     "draw_edges",
     "draw_gpgraph",
     "draw_nodes",
     "draw_paths",
+    "resolve_node_fills",
     "truncate_colormap",
 ]
