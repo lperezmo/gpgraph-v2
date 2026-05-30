@@ -7,6 +7,11 @@ description: "How GenotypePhenotypeGraph wraps a gpmap-v2 map: node attributes, 
 
 A `GenotypePhenotypeGraph` is a NetworkX `DiGraph` over the genotypes of a `gpmap-v2` `GenotypePhenotypeMap`. Each node carries the row attributes from `gpm.data`; each edge connects neighbors under a chosen distance metric. Fixation-model probabilities are stored as the edge attribute `prob`.
 
+![A small codon-distance graph: nodes are codons, edges connect single-nucleotide neighbors](../assets/codon-graph-light.png#only-light)
+![A small codon-distance graph: nodes are codons, edges connect single-nucleotide neighbors](../assets/codon-graph-dark.png#only-dark)
+
+The distance metric decides which nodes are neighbors. Under codon distance, edges connect codons one nucleotide apart, so the graph reflects the genetic code rather than amino-acid Hamming steps.
+
 ## Construction flow
 
 ```python

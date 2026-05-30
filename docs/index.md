@@ -7,6 +7,9 @@ description: "NetworkX-backed, Rust-accelerated graphs over genotype-phenotype m
 
 NetworkX-backed, Rust-accelerated graphs over genotype-phenotype maps. Lifts a [`gpmap-v2`](https://github.com/lperezmo/gpmap-v2) `GenotypePhenotypeMap` into a NetworkX `DiGraph`, populates edges under Hamming or codon distance, and overlays fixation-probability edge weights for evolutionary trajectory analysis.
 
+![Genotype-phenotype graph laid out by Hamming distance, nodes colored by phenotype, edge widths set by SSWM fixation probability](assets/hero-hamming-light.png#only-light)
+![Genotype-phenotype graph laid out by Hamming distance, nodes colored by phenotype, edge widths set by SSWM fixation probability](assets/hero-hamming-dark.png#only-dark)
+
 <div class="grid cards" markdown>
 
 -   :material-rocket-launch: **Quickstart**

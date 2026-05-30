@@ -17,6 +17,13 @@ populate an edge `prob` attribute for evolutionary trajectory analysis.
 This is a clean-break rewrite of [harmslab/gpgraph](https://github.com/harmslab/gpgraph).
 Hot paths live in Rust via PyO3 + rayon; fixation models stay in vectorized numpy.
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/lperezmo/gpgraph-v2/main/docs/assets/hero-hamming-dark.png">
+    <img alt="Genotype-phenotype graph laid out by Hamming distance, nodes colored by phenotype, edges weighted by SSWM fixation probability" src="https://raw.githubusercontent.com/lperezmo/gpgraph-v2/main/docs/assets/hero-hamming-light.png" width="640">
+  </picture>
+</p>
+
 ## Why v2
 
 - **Fast.** Neighbor detection runs in Rust with rayon parallelism. Biallelic cutoff-1 and

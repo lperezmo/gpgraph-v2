@@ -7,6 +7,11 @@ description: "Enumerate shortest paths between two genotypes, multiply edge prob
 
 Once `G.add_model(column=..., model=...)` has populated the `prob` edge attribute, you can ask trajectory questions: which paths from WT to a target genotype carry the most probability mass, and which edges does that mass flow through?
 
+![Forward paths from wildtype to the target genotype with edge widths set by per-edge flux](../assets/paths-flux-light.png#only-light)
+![Forward paths from wildtype to the target genotype with edge widths set by per-edge flux](../assets/paths-flux-dark.png#only-dark)
+
+Reducing the enumerated paths to per-edge flux highlights the backbone of the adaptive trajectory: the thickest edges are the ones most evolutionary paths from wildtype to target pass through.
+
 ## Enumerate paths
 
 ```python
