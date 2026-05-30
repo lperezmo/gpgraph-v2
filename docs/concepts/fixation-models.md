@@ -9,6 +9,11 @@ A fixation model takes two fitness values, `f_i` (source) and `f_j` (target), an
 
 All four built-in models accept either scalar or matching array inputs. The array path is what `add_model` uses to populate the entire edge set in a single numpy pass.
 
+![The four fixation models compared as fixation probability versus fitness ratio](../assets/fixation-panel-light.png#only-light)
+![The four fixation models compared as fixation probability versus fitness ratio](../assets/fixation-panel-dark.png#only-dark)
+
+Each model maps a source/target fitness pair to a fixation probability with a different shape: SSWM is a sharp threshold, Moran and McCandlish are smoother, and the ratio model is the simplest. Picking one sets how strongly the resulting edge weights favor uphill moves.
+
 ## `strong_selection_weak_mutation`
 
 Gillespie (1984). Probability of fixation in the strong-selection weak-mutation limit:
