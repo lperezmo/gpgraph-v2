@@ -1,6 +1,6 @@
 [project]
 name = "gpgraph-v2"
-version = "1.0.0"
+version = "1.1.0"
 description = "NetworkX-backed, Rust-accelerated graphs over genotype-phenotype maps."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -35,6 +35,7 @@ streamlit = ["streamlit >=1.56", "matplotlib >=3.10"]
 Homepage = "https://github.com/lperezmo/gpgraph-v2"
 Repository = "https://github.com/lperezmo/gpgraph-v2"
 Issues = "https://github.com/lperezmo/gpgraph-v2/issues"
+
 
 [dependency-groups]
 dev = [
