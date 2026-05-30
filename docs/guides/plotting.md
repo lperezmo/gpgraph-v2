@@ -53,8 +53,44 @@ draw_gpgraph(
 | Group | Parameters |
 |---|---|
 | Node | `node_list`, `node_size`, `node_color`, `node_shape`, `node_alpha`, `node_linewidths`, `node_edgecolors` |
+| Label | `with_labels`, `labels`, `label_font_size`, `label_ink` |
 | Edge | `edge_list`, `edge_widths`, `edge_scalar`, `edge_color`, `edge_style`, `edge_alpha`, `edge_arrows`, `edge_arrowstyle`, `edge_arrowsize` |
 | Colormap | `cmap`, `vmin`, `vmax` |
+
+## Label nodes legibly
+
+Set `with_labels=True` to label each node. By default the label is the node's `genotypes` attribute, and the text color is chosen **per node from that node's own fill**:
+
+```python
+fig, ax = draw_gpgraph(G, with_labels=True)
+```
+
+This is the important part: when nodes are colored by a colormap, a single fixed text color always collides with part of the colormap. Black text vanishes on the dark (low-phenotype) end; white text vanishes on the bright (high-phenotype) end. `draw_gpgraph` avoids this by picking a dark or light ink per node from the fill's luminance, so labels stay readable across the whole colormap and in both light and dark display themes, with no manual tuning. The same logic is available for node outlines via `node_edgecolors="auto"`:
+
+```python
+fig, ax = draw_gpgraph(G, with_labels=True, node_edgecolors="auto")
+```
+
+Override when you want a fixed color, custom text, or a different size:
+
+```python
+fig, ax = draw_gpgraph(
+    G,
+    with_labels=True,
+    labels={n: G.nodes[n]["genotypes"] for n in G.nodes()},
+    label_ink="black",
+    label_font_size=10,
+)
+```
+
+The ink picker is also exposed directly as `contrast_ink(color)` for use in your own plots:
+
+```python
+from gpgraph.pyplot import contrast_ink
+
+contrast_ink("#fde725")  # bright viridis yellow -> "#10141a" (dark ink)
+contrast_ink("#440154")  # dark viridis purple  -> "#f6f8fa" (light ink)
+```
 
 ## Overlay path flux
 

@@ -10,6 +10,7 @@ Optional matplotlib-backed drawing. Requires `gpgraph-v2[plot]`. See [Plotting](
 ```python
 from gpgraph.pyplot import draw_gpgraph, draw_paths, draw_nodes, draw_edges
 from gpgraph.pyplot import bins, construct_ax, despine_ax, truncate_colormap
+from gpgraph.pyplot import contrast_ink, resolve_node_fills
 ```
 
 ## `draw_gpgraph`
@@ -39,6 +40,10 @@ def draw_gpgraph(
     cmap: str = "plasma",
     vmin: float | None = None,
     vmax: float | None = None,
+    with_labels: bool = False,
+    labels: dict[int, str] | None = None,
+    label_font_size: float = 8.0,
+    label_ink: Any = "auto",
 ) -> tuple[Figure, Axes]
 ```
 
@@ -49,8 +54,38 @@ Draw the graph on a matplotlib axes.
 - `pos` defaults to the Hamming-weight vertical layout (`gpgraph.layout.flattened` with `vertical=True`).
 - `node_color` defaults to the `phenotypes` node attribute.
 - When `paths` is provided, only the edges that appear in paths are drawn, with widths scaled by the per-edge summed flux.
+- `with_labels=True` labels each node (default text = the `genotypes` attribute). With `label_ink="auto"` (the default) each label's color is chosen from its node's fill luminance via `contrast_ink`, so it is legible across the whole colormap and in both light and dark themes. `node_edgecolors="auto"` applies the same per-node contrast to outlines. Pass `labels`, `label_font_size`, or a fixed `label_ink` to override.
 
 Returns `(fig, ax)`.
+
+## `contrast_ink`
+
+```python
+def contrast_ink(
+    color: Any,
+    *,
+    dark: str = "#10141a",
+    light: str = "#f6f8fa",
+    threshold: float = 0.6,
+) -> str
+```
+
+Return `dark` when `color` is light and `light` when it is dark, using perceived luminance (`0.299 R + 0.587 G + 0.114 B`). Intended for text or outlines drawn on a filled node so they contrast with the node's own fill rather than the figure background, keeping them legible in both light and dark display modes. The default `threshold` of `0.6` puts the crossover in the orange band of perceptual colormaps (magma, viridis, plasma).
+
+## `resolve_node_fills`
+
+```python
+def resolve_node_fills(
+    node_color: Any,
+    n: int,
+    *,
+    cmap: str = "plasma",
+    vmin: float | None = None,
+    vmax: float | None = None,
+) -> list[tuple[float, ...]]
+```
+
+Resolve `node_color` to one RGBA fill per node, mirroring how `networkx.draw_networkx_nodes` renders it: a single color is broadcast, a 1-D scalar sequence is mapped through `cmap` after `Normalize(vmin, vmax)`, and a sequence of colors is converted as-is. The returned fills are what `contrast_ink` should be applied to when picking per-node ink.
 
 ## `draw_paths`
 

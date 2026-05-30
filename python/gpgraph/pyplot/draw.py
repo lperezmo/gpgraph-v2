@@ -9,7 +9,7 @@ import numpy as np
 from gpgraph.layout import flattened
 from gpgraph.paths import paths_prob_to_edges_flux
 from gpgraph.pyplot.primitives import draw_edges, draw_nodes
-from gpgraph.pyplot.utils import construct_ax
+from gpgraph.pyplot.utils import construct_ax, contrast_ink, resolve_node_fills
 
 if TYPE_CHECKING:
     from matplotlib.axes import Axes
@@ -42,6 +42,10 @@ def draw_gpgraph(
     cmap: str = "plasma",
     vmin: float | None = None,
     vmax: float | None = None,
+    with_labels: bool = False,
+    labels: dict[int, str] | None = None,
+    label_font_size: float = 8.0,
+    label_ink: Any = "auto",
 ) -> tuple[Figure, Axes]:
     """Draw a :class:`GenotypePhenotypeGraph` on a matplotlib axes.
 
@@ -49,6 +53,15 @@ def draw_gpgraph(
     Edge widths default to a constant; if ``paths`` is passed (a mapping of
     shortest-path tuples to path probabilities), edge widths are set from the
     per-edge summed flux so the visualization highlights likely trajectories.
+
+    Set ``with_labels=True`` to label each node (defaulting to its ``genotypes``
+    attribute). Labels use ``label_ink``: the default ``"auto"`` picks a dark or
+    light color per node from that node's own fill luminance via
+    :func:`~gpgraph.pyplot.utils.contrast_ink`, so text stays readable on both
+    the bright and dark ends of the colormap and in light or dark display
+    themes, with no manual color tuning. Pass any matplotlib color to
+    ``label_ink`` to override. ``node_edgecolors="auto"`` applies the same
+    per-node contrast logic to node outlines.
     """
     if ax is None:
         fig, ax = construct_ax()
@@ -99,6 +112,19 @@ def draw_gpgraph(
     if node_color is None:
         node_color = [G.nodes[n].get("phenotypes", 0.0) for n in node_list]
 
+    # Resolve per-node fills only when something needs to contrast against them
+    # (auto outlines or auto-inked labels), so the common path stays cheap.
+    need_fills = with_labels or node_edgecolors == "auto" or label_ink == "auto"
+    fills = (
+        resolve_node_fills(node_color, len(node_list), cmap=cmap, vmin=vmin, vmax=vmax)
+        if need_fills
+        else None
+    )
+
+    edgecolors_arg: Any = node_edgecolors
+    if node_edgecolors == "auto" and fills is not None:
+        edgecolors_arg = [contrast_ink(c) for c in fills]
+
     draw_nodes(
         G,
         pos,
@@ -109,10 +135,31 @@ def draw_gpgraph(
         node_shape=node_shape,
         alpha=node_alpha,
         linewidths=node_linewidths,
-        edgecolors=node_edgecolors,
+        edgecolors=edgecolors_arg,
         cmap=cmap,
         vmin=vmin,
         vmax=vmax,
     )
+
+    if with_labels:
+        if labels is None:
+            labels = {n: str(G.nodes[n].get("genotypes", n)) for n in node_list}
+        for i, n in enumerate(node_list):
+            if n not in labels:
+                continue
+            x, y = pos[n]
+            ink = (
+                contrast_ink(fills[i]) if (label_ink == "auto" and fills is not None) else label_ink
+            )
+            ax.text(
+                x,
+                y,
+                labels[n],
+                ha="center",
+                va="center",
+                fontsize=label_font_size,
+                color=ink,
+                zorder=3,
+            )
 
     return fig, ax
