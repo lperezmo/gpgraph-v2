@@ -7,6 +7,11 @@ description: "Distance metrics, the dispatch policy that picks the fastest kerne
 
 `gpgraph-v2` defines two genotypes as neighbors when their distance is at most a cutoff. The default distance is Hamming; an alternative codon distance is available for codon-aligned DNA. Neighbor detection runs in Rust with rayon parallelism, with several specialized fast paths for common shapes.
 
+![Hamming neighbors on an L=4 map: cutoff 1 connects single mutants, cutoff 2 also connects double mutants](../assets/neighbor-cutoffs-light.png#only-light)
+![Hamming neighbors on an L=4 map: cutoff 1 connects single mutants, cutoff 2 also connects double mutants](../assets/neighbor-cutoffs-dark.png#only-dark)
+
+The cutoff sets how far apart two genotypes can be and still count as neighbors. Cutoff 1 gives the familiar single-mutation hypercube; raising it to 2 adds every double-mutant edge (the lighter diagonals above), which densifies the graph quickly.
+
 ## Hamming distance
 
 Hamming distance is the number of positions at which two equal-length sequences differ. Cutoff 1 means single-mutation neighbors; cutoff 2 includes double-mutants; and so on.
