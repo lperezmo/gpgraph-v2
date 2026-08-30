@@ -1,6 +1,31 @@
 # CHANGELOG
 
 
+## v1.1.1 (2026-08-30)
+
+### Bug Fixes
+
+- **deps**: Patch crossbeam-epoch pointer formatting unsoundness
+  ([`76f62ee`](https://github.com/lperezmo/gpgraph-v2/commit/76f62ee4ba5ddcfcae1663f84485c71d2e26e229))
+
+- **deps**: Refresh vulnerable Python dependency locks
+  ([`8acf8f6`](https://github.com/lperezmo/gpgraph-v2/commit/8acf8f6b5bfc9b914b0599c4d2c6879ac6e65771))
+
+### Chores
+
+- Bump vulnerable deps to resolve Dependabot alerts
+  ([`1990be3`](https://github.com/lperezmo/gpgraph-v2/commit/1990be348fc94e075088b293a70af0f9e44040d7))
+
+pip (uv.lock): - GitPython 3.1.46 -> 3.1.50 - tornado 6.5.5 -> 6.5.7 - urllib3 2.6.3 -> 2.7.0 - idna
+  3.11 -> 3.18
+
+rust (Cargo.toml + Cargo.lock): - pyo3 0.28 -> 0.29 - numpy 0.28 -> 0.29 (kept in lockstep with
+  pyo3)
+
+Rust crate builds clean and the abi3 extension imports; no source changes required. Python test
+  suite passes.
+
+
 ## v1.1.0 (2026-05-30)
 
 ### Chores
