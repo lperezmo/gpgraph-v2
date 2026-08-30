@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.1.2 (2026-08-30)
+
+### Bug Fixes
+
+- **security**: Declare least-privilege workflow permissions
+  ([`c949017`](https://github.com/lperezmo/gpgraph-v2/commit/c949017f8887ce3bbcf1d8c4e321ef59a7019e59))
+
+
 ## v1.1.1 (2026-08-30)
 
 ### Bug Fixes

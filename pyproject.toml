@@ -1,6 +1,6 @@
 [project]
 name = "gpgraph-v2"
-version = "1.1.1"
+version = "1.1.2"
 description = "NetworkX-backed, Rust-accelerated graphs over genotype-phenotype maps."
 readme = "README.md"
 requires-python = ">=3.11"
